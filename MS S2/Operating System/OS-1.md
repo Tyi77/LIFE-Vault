@@ -1,4 +1,4 @@
-## 2
+## 2nd video
 - Boot loader
 	- chain loader
 		- BIOS(basic input/output system)
