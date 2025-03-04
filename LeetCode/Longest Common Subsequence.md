@@ -1,5 +1,6 @@
 > Link: https://web.ntnu.edu.tw/~algo/Subsequence2.html
 - 給定兩個陣列，可任意刪除其中的元素，但不可改變元素的順序。請找出這兩個陣列中最長的公共子序列。
+- Link是師大演算法的解說，非常清楚，可看
 ```c++
 class Solution {
   public:
