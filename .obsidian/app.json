@@ -1,5 +1,5 @@
 {
-  "attachmentFolderPath": "_Resources",
+  "attachmentFolderPath": "./_Resources",
   "mobileToolbarCommands": [
     "editor:unindent-list",
     "editor:indent-list",
