@@ -76,3 +76,9 @@
 	- priority inversion: 低優先度thread先持有鎖，高優先度thread碰到此區段時會進入spinning狀態以等待鎖的釋放，但spinning會占用CPU資源，因此反而導致低優先度thread無法執行完畢釋放鎖。
 	- Priority Inheritance: 碰到priority inversion時，提高低優先度thread的優先度跟高優先度thread一樣，以讓此thread優先執行完畢並釋放鎖。
 - Semaphores
+	- wait(), signal()
+	- mutex 就是 binary semaphores，唯有一個thread可以執行CS
+	- semaphores本身是可以操控可以執行CS的thread數量
+	- 防止busy waiting
+		- 當資源不可用時，讓執行緒進入「等待隊列」並進入睡眠狀態（Block）。
+		- 當資源變為可用時，喚醒（Wake up）等待的執行緒。
