@@ -25,4 +25,5 @@
 - 確認裝置可以溝通
 	- Polling: 定期clock interrupt時確認
 	- Interrupts: device 自己發出，會有context switch 的 cost
-- 
+## Moving Data to/from Devices
+- Programmed I/O (PIO) vs Direct Memory Access (DMA)
