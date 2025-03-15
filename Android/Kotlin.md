@@ -62,3 +62,7 @@ shapes.add(1, "rectengle") // 加在 index 1 那裡
 - 用 `mapName.keys` 或 `mapName.values` 來獲取 key 或 value 的集合
 	- 因為 keys 和 values 是個 collection，所以可以用 in 語法來確認 key 或 value 是否存在在 map 中
 ---
+## Control Flow
+### If
+- 就跟 c++ 很像，單行的可以不用加 {}
+- 沒有 `condition ? then : else`
