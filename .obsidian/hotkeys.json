@@ -50,15 +50,6 @@
       "key": "E"
     }
   ],
-  "editor:toggle-bullet-list": [
-    {
-      "modifiers": [
-        "Mod",
-        "Shift"
-      ],
-      "key": "8"
-    }
-  ],
   "editor:toggle-numbered-list": [
     {
       "modifiers": [
@@ -75,6 +66,15 @@
         "Shift"
       ],
       "key": "6"
+    }
+  ],
+  "editor:cycle-list-checklist": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "8"
     }
   ]
 }
