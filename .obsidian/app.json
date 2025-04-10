@@ -20,5 +20,12 @@
     "editor:insert-link",
     "editor:toggle-checklist-status",
     "editor:configure-toolbar"
-  ]
+  ],
+  "pdfExportSettings": {
+    "includeName": true,
+    "pageSize": "A4",
+    "landscape": false,
+    "margin": "0",
+    "downscalePercent": 100
+  }
 }
