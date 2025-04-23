@@ -18,6 +18,15 @@
 			- 上層：一次性將「一批」相關連的process分派到相對應的CPU中
 			- 下層：每個CPU有自己的Ready List，不用再去跟其他CPU搶佔Shared Ready List的使用權(Lock)。等自己的Ready List都空了之後，才會向上層要process或跟其他CPU借process
 		- 優點：解決Single Shared Ready List 的缺點
+## MultiComputers
+- 平衡nodes之間的運算效能的方法 
+	- Sender Initiated Load Balancing Algorithm
+		- 當自己overload時，就probe出去跟其他node說他需要幫忙，然後under loaded 的 CPU 就會來接此 process
+	-  Receiver Initiated Load Balancing Algorithm
+		- 當自己 under loaded 時，就 probe 出去跟大家可以把process給他，然後就會有overloaded的CPU把process丟給他
+	- 比較兩者
+		- 在高負載的狀況下，前者會出錯後者不會
+		- 
 ## DistributedSystem
 - Design Issues of a DS
 	-  Transparency
