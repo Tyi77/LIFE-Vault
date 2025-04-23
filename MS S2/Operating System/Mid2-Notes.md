@@ -35,3 +35,5 @@
 	- non-blocking
 		- 優點：處理完訊息，可以繼續處理接下來的任務
 		- 缺點：會有額外的overhead來確認訊息是否傳遞或接收成功
+## Distributed File System
+- AFS vs NFS
