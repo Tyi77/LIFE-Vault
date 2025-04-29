@@ -59,16 +59,7 @@
       "key": "7"
     }
   ],
-  "editor:toggle-checklist-status": [
-    {
-      "modifiers": [
-        "Mod",
-        "Shift"
-      ],
-      "key": "6"
-    }
-  ],
-  "editor:cycle-list-checklist": [
+  "editor:toggle-bullet-list": [
     {
       "modifiers": [
         "Mod",

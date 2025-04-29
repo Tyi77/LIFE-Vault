@@ -26,7 +26,6 @@
 		- 當自己 under loaded 時，就 probe 出去跟大家可以把process給他，然後就會有overloaded的CPU把process丟給他
 	- 比較兩者
 		- 在高負載的狀況下，前者會出錯後者不會
-		- 
 ## DistributedSystem
 - Design Issues of a DS
 	-  Transparency
