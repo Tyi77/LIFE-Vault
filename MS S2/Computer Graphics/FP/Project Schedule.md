@@ -1,0 +1,27 @@
+- Today: 5/16
+- **5/25(Sunday)** - Proposal Video (**7days** from now)
+	- Time: 12-20 minutes
+	- Content in the video
+		- Title, member info
+		- Goal of the project
+		- Related work/Techniques
+		- Our Plan (Expected method, difficulties/uniqueness/experiments...)
+	- ==Reminder==: Allocate more time to the part of survey , and focus on one or two related methods/techniques)
+- **5/25 - 6/1**
+	- Follow TA’s instruction, browse a number of videos , and provide commends or ask questions .
+- **6/2 (Monday) or 6/9 (Monday)** - In-Person Presentation (**17days** or **24 days** from now)
+	- Final Presentation and Demo
+	- Content in the presentation
+		- All the content in the proposal
+		- ==the results and the demo==
+	- ==Reminder==: Allocate more time to the last 3 terms (the difficulties/uniqueness, results and demo), especially the results and demo
+- **6/14 (Saturday)** - Project Report
+	- Written Report
+		- No more than 6 pages
+		- Content
+			- Describe the **goal/problem**, **method**, **difficulty and/or uniqueness**, **results and/or comparison**
+			- (Must) List **libraries** and **open sources** used in your project.
+			- (Must) What are the **differences** between your project and open source/others’ projects you used
+			- List the **contribution** (e.g. work items) of each member
+	- Codes
+		- With proper comments
