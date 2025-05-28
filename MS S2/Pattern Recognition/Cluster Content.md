@@ -7,7 +7,7 @@
     - 點–點、點–集、集–集相似度/距離度量
 3. **Clustering Relational Data**
     - 只用樣本間關係 (similarity/dissimilarity) 進行聚類
-4. **Sequential Clustering (線上演算法)**    
+4. **Sequential Clustering (序列演算法)**    
     - 样本逐一加入的決策流程        
     - 閾值 (Θ) 與最大群數 (q) 的選擇        
 5. **Cluster Validity (群體效度評估)**    
@@ -55,3 +55,8 @@
     - k-means 在特徵空間中的應用        
 
 > **重點**：Set09 聚焦於**各類聚類演算法的機制與實作**，逐一介紹從最經典的 k-means，到可處理非球形、噪聲（DBSCAN、OPTICS）、階層結構（hierarchical）、再到基於圖論與頻譜的 spectral clustering。每種方法的**假設、流程、優缺點**皆有清晰闡述，並輔以實例圖示，便於理解各算法在不同資料特性下的適用場景。
+
+## 筆記
+- Internal Cluster Validity Criteria
+	- To **maximize** $$\cfrac {Seperation (distances)\ between\ clusters}{Scatters (sizes)\ of\ clusters}$$
+	- or **minimize** its inverse in some form
