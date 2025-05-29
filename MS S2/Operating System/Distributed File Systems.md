@@ -80,10 +80,10 @@
 	- 當使用延遲寫入或跨用戶端快取時，不同用戶的快取可能已不同步，驗證策略的目標是確保快取內容與伺服器主檔案一致
 	- 兩大類 : client-initiated 和 server-initiated
 		- client-initiated : Before every access, Periodic checking, On open (AFS)
-		- 重點整理：
 
 | 策略               | 優點       | 缺點         | 代表系統       |
 | ---------------- | -------- | ---------- | ---------- |
 | Client-Initiated | 設計簡單，負擔小 | 效能差、一致性弱   | 早期 NFS     |
 | Server-Initiated | 效能佳、一致性強 | 複雜度高、需記錄狀態 | AFS、NFS v4 |
-## 
+## 是吧
+- 要確定耶
