@@ -1,0 +1,37 @@
+## 基礎觀念
+- 檔案的性質
+	- 命名物件
+	- Persistence 持久性，除非被刻意刪除不然會被永久保存
+- 檔案包含
+	- **資料（data）**：一連串可讀寫的項目
+	- **中繼資料（metadata）**：包括檔案長度、時間戳記、型態、擁有者、存取權限等資訊
+- 檔案系統(File Systems)
+	- 功能包括：組織、儲存、檢索、命名、共用與保護檔案
+## 分散式檔案系統的需求
+- 五種**透明性** (Transparency)
+	- **Access** Transparency : 無論檔案在哪裡，都可使用相同的API `open()` 和 `read()` 來存取檔案。
+	- **Location** Transparency : 統一的 `namespace` ，不管檔案被搬遷到哪裡都不會變
+	- **Mobility** Transparency : 檔案移動時，不需更改client的設定
+	- **Performance** Transparency : 系統小變動時，不會影響client
+	- **Scaling** Transparency : 節點的增加還是可以維持效能
+- **Concurrent File Updates（並行更新處理）**    
+    - 多個用戶同時修改同一檔案時，應避免資料衝突與錯誤。        
+- **File Replication（檔案複製）**    
+    - 複製可提升：        
+        - **可擴展性**：讓多台伺服器負責不同用戶存取。            
+        - **容錯能力**：當某伺服器故障時，可改由其他複本提供服務
+- **Hardware & OS Heterogeneity（異質性支援）**
+    - DFS 應支援不同作業系統與硬體平台之間的互通性
+    - 這也與所謂的「開放性（openness）」有關
+- **Fault Tolerance（容錯能力）**    
+    - 系統在伺服器或用戶端失效時仍應保持可用性。        
+- **File Sharing Semantics（檔案共享語意）**    
+	- 檔案共享的更新一致性語意需定義明確，例如：    
+	    - **One-copy semantics（UNIX）**：所有人看到的是單一一致版本   
+	    - **Session semantics（AFS）**：只在開啟與關閉時同步更新       
+	    - **Append-only semantics（HDFS）**：只允許附加寫入，不允許修改    
+	    - **Copy-on-write**：寫入時自動建立複本 
+- **Security（安全性）**    
+	- 包括存取控制、身分認證、資料傳輸加密等
+- **Efficiency（效率）**    
+	- 整體操作效能應盡可能接近本地檔案系統
