@@ -1,0 +1,7 @@
+/* 壓縮只包含空白字元的段落 */
+.markdown-preview-view p:empty,
+.markdown-preview-view p:has(br):only-child {
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
