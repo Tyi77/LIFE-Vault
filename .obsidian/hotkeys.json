@@ -67,5 +67,15 @@
       ],
       "key": "8"
     }
+  ],
+  "editor:save-file": [],
+  "markdown:toggle-preview": [],
+  "editor:toggle-source": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "E"
+    }
   ]
 }
