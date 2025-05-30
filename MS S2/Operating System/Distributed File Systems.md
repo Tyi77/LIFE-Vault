@@ -38,17 +38,17 @@
 	- **Efficiency（效率）**    
 		- 整體操作效能應盡可能接近本地檔案系統
 ## 命名與掛載機制（Naming & Mounting）
-- Naming : logical file name 與 physical location 的對應機制 (mapping)
-- 三種命名架構
+- **Naming** : logical file name 與 physical location 的對應機制 (mapping)
+- **三種命名架構**
 	1. 掛載遠端目錄（Mount remote directories）
 		- 遠端dir直接mount在本地端上，使用本地路徑即可存取遠端檔案
 		- e.g. Unix 的 NFS
 	2. 檔名包含主機名（Host-based Naming）
 		- 檔案名稱直接包含主機名，以此能保證檔案名稱唯一
 	3. 完全整合的命名空間（Global Namespace）
-- NFS : 跨系統共享檔案時還是需要mount點的配置與管理，而非僅靠檔名即可
+- **NFS** : 跨系統共享檔案時還是需要mount點的配置與管理，而非僅靠檔名即可
 ## 檔案存取(File Access)模型+快取(Cache)相關內容
-- 兩種檔案存取模型 (File Accessing Models)
+- **兩種檔案存取模型 (File Accessing Models)**
 	1. Remote Service Model（遠端服務模型）
 		- 讀寫都靠server，本地端不會存取副本
 		- 優點：client不需大量的儲存空間、不需考慮Cache Consistency
@@ -58,14 +58,14 @@
 		- 將檔案快取在本地端，必要時才與server通訊
 		- 需要維護 Cache Consistency (快取一致性)
 		- 適合：多客戶端情景
-- 三種快取位置策略 (Cache Location Policies)
+- **三種快取位置策略 (Cache Location Policies)**
 	1. Server Memory Caching（伺服器記憶體快取）
 		- 簡單共享
 	2. Client Memory Caching（客戶端記憶體快取）
 		- 快速暫用
 	3. Client Disk Caching（客戶端磁碟快取）
 		- 大型快取
-- 兩大快取更新策略（Cache Update Policies）(Write 的部分)
+- **兩大快取更新策略（Cache Update Policies）(Write 的部分)**
 	1. Write-through scheme（即時寫入）
 		- 每次更新都要寫入server's disk中
 		- 最可靠但效能差
@@ -76,7 +76,7 @@
 			2. Periodic write : 定時寫回server
 			3. Write on close : 檔案關閉時才寫回server
 				- 這就是 AFS 採用的「session semantics」
-- 快取驗證策略（Cache Validation Policies）(Read 的部分)
+- **快取驗證策略（Cache Validation Policies）(Read 的部分)**
 	- 當使用延遲寫入或跨用戶端快取時，不同用戶的快取可能已不同步，驗證策略的目標是確保快取內容與伺服器主檔案一致
 	- 兩大類 : client-initiated 和 server-initiated
 		- client-initiated : Before every access, Periodic checking, On open (AFS)
@@ -86,4 +86,27 @@
 | Client-Initiated | 設計簡單，負擔小 | 效能差、一致性弱   | 早期 NFS     |
 | Server-Initiated | 效能佳、一致性強 | 複雜度高、需記錄狀態 | AFS、NFS v4 |
 ## 檔案複製 (File Replications)
-- 
+- **replica (檔案副本) 的性質**
+	- 在server的disk中
+	- 注重的是 performance 和 availability
+	- persistent
+- **Replication Transparency**
+	- 兩大挑戰：Naming of Replicas 和 Replication Control
+	- Naming of Replicas
+		- 對於program 的 logical name 要一樣，就算是在不同server底下的replicas
+	- Replication Control
+		- Explicit vs. Implicit/lazy Replication : 使用者指定 vs. 系統自己決定
+- **多副本更新協議（Multicopy Update Policies）**
+	1. Read-Only Replication（唯讀複製）
+	2. Read-One Write-All Protocol（R1Wn）
+		- 讀取任一副本，寫入所有副本
+		- 適合大量讀取的情境
+		- 容錯性差：因為只要一個副本寫入錯誤就算失敗
+	3. Available-Copies Protocol（可用副本協議）
+		- 讀取任一副本，寫入可獲取的副本，允許有副本是無效的
+		- 容錯能力高，但需維護consistency
+	4. Primary-Copy Protocol（主副本模式）
+		- 讀取任一副本，只寫入主副本，其他副本看consistency semantics
+		- 容錯性高於 R1Wn
+	5. Quorum-Based Protocols（表決式共識協定）
+		- 
