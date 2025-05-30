@@ -108,5 +108,96 @@
 	4. Primary-Copy Protocol（主副本模式）
 		- 讀取任一副本，只寫入主副本，其他副本看consistency semantics
 		- 容錯性高於 R1Wn
-	5. Quorum-Based Protocols（表決式共識協定）
-		- 
+	5. Quorum-Based Protocols（表決式一致性協定）
+		- 基本定義
+			- 讀的時候找 `r` 個副本當候選，挑出其中版本最大的副本當作閱讀的副本
+			- 寫的時候找 `w` 個副本，找出其中最大的版本號，此版本號加一，並寫入所有( `w` 個) 副本
+		- 相關條件
+			-  $w + r > n$ ($n$ 是副本總數) : 任何「讀操作」與「寫操作」的副本集合**至少重疊 1 個副本**
+			- $2w > n$ : 任何兩個寫操作的副本集合也會**有重疊**
+		- 延伸變體
+			- R1Wn : r=1, w=n
+				- 適合讀多寫少
+			- Majority Consensus : r = w = $⌊\frac {n}{2}⌋$+1 (必定過半)
+				- 簡化衝突檢查
+			- Weighted Voting : 每個副本的投票權重不同 ($v$)，只需滿足 $r + w > v$ 和 $2w > v$ 就好
+				- 此變體可讓「資料中心副本」有高權重，低效能節點有低權重，提升彈性
+## 無狀態 vs 有狀態的檔案服務 (Stateless vs. Stateful File Service)
+> p.25-28
+
+| 類型     | Stateless Server（無狀態伺服器） | Stateful Server（有狀態伺服器）      |
+| ------ | ------------------------ | ---------------------------- |
+| 是否儲存狀態 | ❌ 不儲存用戶端狀態               | ✅ 記錄用戶端的開啟檔案、位置等狀態           |
+| 存取模式   | 每次請求需包含完整資訊              | 請求可省略細節，伺服器記得之前的狀態           |
+| 開檔/關檔  | 無需顯式 open/close          | 需使用 open() 開始、close() 結束檔案存取 |
+| 容錯恢復   | ✅ 崩潰後能馬上重新提供服務           | ❌ 崩潰後需額外恢復協議                 |
+| 複雜性    | 較簡單                      | 較高，需管理 session 與失敗情況         |
+| 快取驗證   | 無法由伺服器主動推送               | 可由伺服器推送更新通知（如 callback）      |
+| 鎖定支援   | ❌ 難以實作                   | ✅ 可支援檔案鎖定                    |
+- **總結建議**
+
+| 如果你需要…                | 建議使用…                       |
+| --------------------- | --------------------------- |
+| 高容錯性，重啟立即可用           | Stateless 伺服器（如 NFS v3）     |
+| 支援 callback、lock、高一致性 | Stateful 伺服器（如 AFS, NFS v4） |
+## 檔案服務架構與 API 設計：Flat File Service、Directory Service、Client Module
+> p.29-32
+- **三大模組分工**
+	- **Flat File Service** : 有了UFID (Unique File ID)後，對檔案本身做動作
+	- **Directory Service** : 提供「名稱 → 檔案」的對應查找。負責處理目錄（目錄也是一種特殊檔案）
+	- **Client Module**
+		- 每個用戶端執行端都裝有一個 Client Module
+		- 整合前兩個服務，對使用者提供統一 API （open, read, write...）
+		- 是扮演前端界面的角色，也負責快取等優化操作
+## Network File Systems (NFS) 
+> p.33-41
+- 基本概念
+	- NFS可讓遠端系統直接「掛載」在本地端目錄上
+	- 通常採用 stateless server 架構 (至少在 NFS v3 以前)
+- 好多API
+- **掛載與路徑解析機制**
+	- client對於server的lookup : 查看掛載的路徑
+	- client需要作多次的lookup才能完整的解析遠端的路徑與存取檔案
+	- 有cache的機制來記住存取過的路徑可降低解析路徑的成本
+- **Cache機制**
+	- 都是 client 在發送 read/write 請求，server 負責處理這些請求
+	- Server Caching
+		- 主要觀念
+			- Read-Ahead : 預測用戶會開啟什麼檔案，先cache住這些檔案
+			- Delayed-Write : 先放在記憶體中，等到某些條件觸發後再寫入磁碟
+		- NFS v3 提供的兩種方法
+			- Write-Through Caching : 每次寫入都直接寫進disk中
+			- Committed-Write Caching : 先放在記憶體中，等接到 client 發出commit的訊息才寫入disk中。在client的實作，通常是在關閉檔案時會自動發送commit
+	- Client Caching
+		- 快取 data blocks, file attributes, lookup查詢結果, getattr和readdir結果...在client端
+		- 會有資料一致性的問題。驗證快取是否可用...
+			- 需符合 ($T$ 現在時間, $T_c$ 本地端最後**驗證**時間, $T_m$ 檔案最後**修改**時間)
+				- $T - T_c < freshness\ interval$
+				- $T_m(client) = T_m(server)$
+	- Dirty Page 管理
+		- 當client對於cache的資料做寫入時，會被標記為 dirty page
+		- 送回server
+			- 等檔案被`close()`了或 `sync()`
+			- 背景程序 (如 UNIX 的 `biod`) 非同步處理
+## Andrew File System (AFS)
+> p.42-53
+- 基本觀念
+	- **設計來克服 NFS 一致性與擴展性問題的分散式檔案系統**
+- **兩大設計理念**
+	- Whole-File Serving（整檔傳送）
+	- Whole-File Caching（整檔快取）
+		- 快取在 local disk 中 (非記憶體)
+- **此設計的假設**
+	- 檔案都比較小
+	- 讀的頻率比寫的頻率高
+	- 通常都是一人讀寫的情況
+
+- **運作方式+Callback機制**
+	- Vice 是 server 的角色，Venus 是 client 的角色
+	- 三大行為
+		- **open** : 看cache有沒有檔案，沒就從Vice拿。拿的時候 Vice 會一併檔案傳輸 Callback Promise 給 Venus，並標記為 **valid**
+		- **read/write** : 都對 Venus cache 做，跟 Vice 無關
+		- **close** : 回傳檔案至 Vice ，Vice 會對於所有擁有此檔案 Callback Promise 的 Venus 傳送 Callback，Venus 收到此  Callback 就會在 cache 中的此 Callback Promise 上標記 **canceled**。這樣重新要 open 此檔案時，就需要重新到 server 拿取。
+	- Callback Promise 有 valid 和 canceled 兩種狀態
+	- Client 被重啟後，需要透過 Venus 向 Vice 發送 file validation request 來保證所有的 callback promise 是正確的狀態
+## 
