@@ -200,4 +200,8 @@
 		- **close** : 回傳檔案至 Vice ，Vice 會對於所有擁有此檔案 Callback Promise 的 Venus 傳送 Callback，Venus 收到此  Callback 就會在 cache 中的此 Callback Promise 上標記 **canceled**。這樣重新要 open 此檔案時，就需要重新到 server 拿取。
 	- Callback Promise 有 valid 和 canceled 兩種狀態
 	- Client 被重啟後，需要透過 Venus 向 Vice 發送 file validation request 來保證所有的 callback promise 是正確的狀態
-## 
+## Hadoop Distributed File System (HDFS)
+> p.55
+- 這是為了解決大數據（Big Data）儲存與處理問題所設計的現代分散式檔案系統，廣泛應用於 Hadoop 生態系中（如 MapReduce 、Spark 、Hive 等）
+- 架構總覽
+	- 
