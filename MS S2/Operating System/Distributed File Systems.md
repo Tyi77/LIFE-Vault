@@ -203,5 +203,13 @@
 ## Hadoop Distributed File System (HDFS)
 > p.55
 - 這是為了解決大數據（Big Data）儲存與處理問題所設計的現代分散式檔案系統，廣泛應用於 Hadoop 生態系中（如 MapReduce 、Spark 、Hive 等）
-- 架構總覽
-	- 
+- 三大區塊
+	- **NameNode**
+		- HDFS的控制中心
+		- name -> block 的對應
+		- block 的 allocation/deallocation
+	- **DataNodes**
+		- 真正儲存檔案的節點
+		- 每個檔案會被切成數個區塊（blocks），並分別儲存在不同的 DataNode 上
+		- 每個區塊可被複製（**Replication**），分散到不同機架（Rack）
+	- **Client**
