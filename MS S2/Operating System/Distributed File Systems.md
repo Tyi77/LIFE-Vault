@@ -211,5 +211,21 @@
 	- **DataNodes**
 		- 真正儲存檔案的節點
 		- 每個檔案會被切成數個區塊（blocks），並分別儲存在不同的 DataNode 上
-		- 每個區塊可被複製（**Replication**），分散到不同機架（Rack）
+		- 每個區塊可被複製（**Replication**），分散到不同機架（**Rack**）
+		- write-once 機制：寫入檔案後即不能更改，只能用append的方式覆蓋內容
 	- **Client**
+- **Block Replication**
+	- 簡單策略
+		- 將副本儲存在不同的rack中
+		- **缺點：** 跨 rack 傳輸成本高，寫入延遲大
+	- Rack locality awareness 策略 (Hadoop 預設)
+		- 第一副本：離client最近的datanode上
+		- 第二副本：與第一副本同個rack但不同的datanode上
+		- 其他副本：完全不同的rack中
+	- 其他考量：磁碟使用率過高不會新增block。慢速快速的節點行為不同
+	- Re-Replication : 壞掉或檔案損毀時，會重新複製
+- Metadata in HDFS
+	- FsImage : 紀錄檔案系統架構的完整快照(snapshot)
+	- EditLog : 紀錄每次更改的內容
+	- 透過這兩個可以恢復壞掉的檔案系統架構
+- 
