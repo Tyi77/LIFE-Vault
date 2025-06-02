@@ -228,4 +228,25 @@
 	- FsImage : 紀錄檔案系統架構的完整快照(snapshot)
 	- EditLog : 紀錄每次更改的內容
 	- 透過這兩個可以恢復壞掉的檔案系統架構
-- 
+## Lustre Distributed File System
+- 核心組件
+	- **MDS （Metadata Servers）**    
+	    - 管理檔案名稱與目錄結構       
+	    - 接收用戶端的檔案操作請求，建立或查詢 inode     
+	- **MDT （Metadata Storage Targets）**    
+	    - MDS 實際儲存 metadata 的實體儲存空間（例如 inode、權限等） 
+	- **OSS （Object Storage Servers）**    
+	    - 負責處理用戶端的檔案內容存取        
+	    - 與 OST 配合，提供實際的檔案資料儲存服務   
+	- **OST （Object Storage Targets）**    
+	    - OSS 的物理儲存設備，每個檔案可對應到多個 OST 以分散儲存負載
+	- **FSC （File System Clients）**    
+	    - 客戶端主機，透過 MDS 存取 metadata、透過 OSS 存取實際檔案資料
+- 檔案建立流程
+	1. client 發出請求，MDS接收請求
+	2. MDS 在 MDT 中建立一個 inode (檔案的 metadata) ，紀錄與此檔案相關的 object list 和每個 object 所使用的 OSS (Object -> OSS per object)
+	3. MDS 通知 OSS 去建立真正的 file object
+- 不同的角度看待 File, Object 和 Block
+	- 以 File 的角度：File 可以被拆分成不同的 Blocks，而每個 Blocks 可以放入不同的 Objects
+	- 以 MDS 的角度：每個 File 會擁有特定的 Object -> OSS list，以在那些 Object 抓取此 File 的 Blocks
+	- 以 Object 的角度：擁有不同 File 的 Blocks
