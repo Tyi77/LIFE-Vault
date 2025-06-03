@@ -78,4 +78,58 @@
 	- procedure-call 和 symmetric mode 中，process 會互相交換資料。每次同步使用一對訊息，計算：    
 		- **偏移量 $o_{ij}$​**：兩時鐘的時間差估計        
 		- **傳輸延遲 $d_{ij}$​**：兩訊息的總往返時間
-	- 
+	- 有一段計算兩個 servers 間的 clock skew ( $S$ ) 的公式，但我有點看不懂 $$S_{AB}​−\cfrac{d_{AB}}{2}​​≤S≤S_{AB}​+\cfrac{d_{AB}}{2}​​​​$$
+		- 若以 $S_{AB}$​ 為估計值，則 $d_{AB}$​ 為其誤差界
+		- A 和 B 為兩個 servers
+## Event Ordering 與 Logical Clocks（事件排序與邏輯時鐘）
+> p.16-23。涵蓋 Lamport 時鐘與 Vector Clock 的概念、演算法與性質
+- 基本觀念
+	- 在單一電腦中，可以依據**本地實體時鐘**對事件排序。    
+	- 但在分散式系統中，無法保證所有節點時鐘完全同步 → 很難使用實體時間排序。    
+	- 好消息是有兩個**簡單且明確的事實**可以用於排序：    
+	    1. 若兩事件在同一個 process $p_i​$ 發生，則可依照 $p_i​$ 見到的順序排序。 
+	    2. 若一個事件是訊息的發送，另一事件是接收該訊息，那麼「發送」發生在「接收」之前。
+### Lambert's Logical Clock
+- **Happened Before Relation**（發生先後關係）(以 $→$ 做記號)
+	- **同個process下**，若事件 e 在 事件 e' 之前，就可記為 $e→e′$
+	- $\text{send}(m) \rightarrow \text{receive}(m)$
+	- 傳遞性：若 $e \rightarrow e'$ 且 $e' \rightarrow e''$，則 $e \rightarrow e''$
+- Logical Clock $L(e)$
+	- 符號
+		- $L_i(e)$ 是事件 e 在 process i 的 timestamp
+		- $L(e)$ 是事件 e 的總 timestamp
+	- 更新規則
+		- LC1：每當 process $p_i$ 發生事件前，$L_i \leftarrow L_i + 1$
+		- LC2a：發送訊息時，附上當下 $L_i$    
+		- LC2b：收到訊息 $(m, t_m)$ 時：$$ L_j \leftarrow \max(L_j, t_m) + 1$$
+	- 性質：$$若 e→e' ⇒L(e)<L(e')$$
+		- 但**反過來不成立**。所以你無法從 LC 得出事件的先後順序
+- Global logical clocks (GLC)
+	- logical clocks 只是在單個process的中的數值，不同的processes你無法從各別的 LC 來判斷event的先後順序
+	- 因此引入 GLC ，混合 LC 和其 process ID : $GLC(e)=(L_i​(e),i)$
+	- $$(L_i​(e),i)<(L_j​(f),j)⇔L_i​(e)<L_j​(f)\ 或\ [L_i​(e)=L_j​(f) 且 i<j]$$
+- 圖例![[Pasted image 20250603200627.png]]
+### Vector Clock
+- 事件 e 的 vector clock 記做 : $VC(e)$
+- 性質
+	- 若 $e\rightarrow e'$，則 $VC(e) < VC(e')$
+	- 若 $VC(e) < VC(e')$，則 $e\rightarrow e'$
+	- 若無法比較（兩邊都不小於），則 $e\parallel e'$
+- 定義
+	- $V_i$ 為第 i 個 process 的 Vector Clock，裡面有 N 個 integers 
+	- N 代表有多少個 processes
+	- $V_i​[j]$：$p_i$​ 目前知道的第 $j$ 個 process 累積的事件數量
+- 更新規則
+	1. 只要有發生event，不管是內部處理、發送訊息或接收訊息，都先在 $V_i[i]$ 中加1 ( $V_i[i] ← V_i[i] + 1$ )
+	2. 內部處理：做完第一步就結束
+	3. 發送訊息：做完第一步後，將整個 $V_i$ 一併 message 發送給目標 process
+	4. 接收訊息：做完第一步後，將收到的 $V_j$ 與自己的 $V_i$ 做比較，不同欄位個別取 `max的值` 更新數值
+
+- 圖例![[Pasted image 20250603200136.png]]
+### 兩個clock的差異
+- logical clock 只有單一數值，vector clock 是一個 vector
+- logical clock 的絕對數值只在單一process中有效，多個process的數值有可能數值一樣但先後順序不同
+- vector clock 能確保多個 process 下，其絕對數值能代表事件真正的先後順序
+## Distributed Mutual Exclusion（分散式互斥，簡稱 DME）
+> p.24-39。涵蓋多種實作互斥的演算法（中心式、環狀式、Ricart、Maekawa 等）
+- 
