@@ -4,10 +4,10 @@
     ➤ 為了讓事件能以一致順序處理，各節點必須對「時間」有共識   
 2. **互斥（Mutual exclusion）**  
     ➤ 當多個節點想要存取共享資源時，需確保同一時間只有一個節點能使用該資源   
-3. **死結偵測與處理（Deadlock detection and handling）**  
-    ➤ 若程序間形成循環等待資源的情形，需偵測並解除死結   
-4. **領導者選舉（Leader Election）**  
+3. **領導者選舉（Leader Election）**  
     ➤ 當需要集中協調的任務出現時，需從節點中選出一位「領導者」。
+4. **死結偵測與處理（Deadlock detection and handling）**  
+    ➤ 若程序間形成循環等待資源的情形，需偵測並解除死結   
 ## Clock Synchronization
 - 時鐘的困難：
 
@@ -48,7 +48,7 @@
 		- 若客戶端的時鐘比 UTC 快，則會需要「倒轉時鐘」，對某些應用不允許
 		- 解法是「減慢」時鐘速度，而不是倒退
 - The Berkeley Algorithm
-	- 沒有 UTC 接收裝置。    
+	- 沒有 UTC 接收裝置   
 	- 指定某主機為**時間守護者（time daemon）**：    
 		1. 向其他主機詢問時鐘偏差（skew）。        
 		2. 收到所有偏差後，計算平均值。        
@@ -79,7 +79,7 @@
 		- **偏移量 $o_{ij}$​**：兩時鐘的時間差估計        
 		- **傳輸延遲 $d_{ij}$​**：兩訊息的總往返時間
 	- 有一段計算兩個 servers 間的 clock skew ( $S$ ) 的公式，但我有點看不懂 $$S_{AB}​−\cfrac{d_{AB}}{2}​​≤S≤S_{AB}​+\cfrac{d_{AB}}{2}​​​​$$
-		- 若以 $S_{AB}$​ 為估計值，則 $d_{AB}$​ 為其誤差界
+		- 若以 $S_{AB}$​ 為 estimated skew，則 $d_{AB}$​ 為其誤差界
 		- A 和 B 為兩個 servers
 ## Event Ordering 與 Logical Clocks（事件排序與邏輯時鐘）
 > p.16-23。涵蓋 Lamport 時鐘與 Vector Clock 的概念、演算法與性質

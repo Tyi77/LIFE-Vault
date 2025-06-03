@@ -49,16 +49,16 @@
 - **NFS** : 跨系統共享檔案時還是需要mount點的配置與管理，而非僅靠檔名即可
 ## 檔案存取(File Access)模型+快取(Cache)相關內容
 - **兩種檔案存取模型 (File Accessing Models)**
-	1. Remote Service Model（遠端服務模型）
+	1. **Remote Service Model**（遠端服務模型）
 		- 讀寫都靠server，本地端不會存取副本
 		- 優點：client不需大量的儲存空間、不需考慮Cache Consistency
 		- 適合：大量寫入作業
 		- 早期版本的 NFS 主要以此方式運作
-	2. Data Caching (upload/download) Model（資料快取模型）
+	2. **Data Caching (upload/download) Model**（資料快取模型）
 		- 將檔案快取在本地端，必要時才與server通訊
 		- 需要維護 Cache Consistency (快取一致性)
 		- 適合：多客戶端情景
-- **三種快取位置策略 (Cache Location Policies)**
+- **三種快取位置策略 (Cache Location Policies)**![[Pasted image 20250604003059.png]]
 	1. Server Memory Caching（伺服器記憶體快取）
 		- 簡單共享
 	2. Client Memory Caching（客戶端記憶體快取）
@@ -79,7 +79,7 @@
 - **快取驗證策略（Cache Validation Policies）(Read 的部分)**
 	- 當使用延遲寫入或跨用戶端快取時，不同用戶的快取可能已不同步，驗證策略的目標是確保快取內容與伺服器主檔案一致
 	- 兩大類 : client-initiated 和 server-initiated
-		- client-initiated : Before every access, Periodic checking, On open (AFS)
+		- 三種client-initiated : Before every access, Periodic checking, On open (AFS)
 
 | 策略               | 優點       | 缺點         | 代表系統       |
 | ---------------- | -------- | ---------- | ---------- |
