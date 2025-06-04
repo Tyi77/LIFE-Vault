@@ -12,6 +12,9 @@
     - 閾值 (Θ) 與最大群數 (q) 的選擇        
 5. **Cluster Validity (群體效度評估)**    
     - 內部評估指標 (internal validity)：只用聚類結果本身計算        
+	    - Internal Cluster Validity Criteria
+			- To **maximize** $$\cfrac {Seperation (distances)\ between\ clusters}{Scatters (sizes)\ of\ clusters}$$
+			- or **minimize** its inverse in some form
     - 外部評估指標 (external validity)：引入真實標籤或先驗結構        
 6. **常見內部效度指標**    
     - Dunn’s Index ($D_m$) ↗ $$D_m = \frac{ \min_{i \ne j} d(C_i, C_j) }{ \max_k \left[ \operatorname{diam}(C_k) \right] }$$
