@@ -1,5 +1,7 @@
 [
   "obsidian-git",
   "obsidian-excalidraw-plugin",
-  "obsidian-image-toolkit"
+  "obsidian-image-toolkit",
+  "obsidian-style-settings",
+  "obsidian-text-format"
 ]

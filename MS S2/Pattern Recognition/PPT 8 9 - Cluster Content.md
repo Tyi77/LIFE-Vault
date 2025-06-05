@@ -26,9 +26,7 @@
     - Adjusted Rand Index (ARI)        
     - Normalized Mutual Information (NMI)        
     - Clustering Accuracy (Hungarian 演算法對應)        
-
 > **重點**：Set08 著重於**聚類的基本概念**與**如何評價聚類結果的好壞**，從最基礎的劃分方式（硬／模糊）、相似度度量，到一系列內部與外部的效度指標，並詳細介紹各種指標的計算與適用情境，為後續選擇與調整聚類算法的超參數提供依據。
-
 ---
 ## Set09 大綱
 1. **Clustering Algorithms Overview**    
