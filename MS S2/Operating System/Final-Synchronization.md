@@ -13,8 +13,8 @@
 
 	- 每台電腦有自己的實體時鐘。    
 	- 不同電腦的晶體振盪頻率可能略有不同，導致：    
-	    - **Clock skew（時鐘偏移）**：任兩個時鐘的讀數差。        
-	    - **Clock drift（時鐘漂移）**：振盪頻率差異導致的累積誤差。
+	    - **Clock skew（時鐘偏移）**：任兩個時鐘的讀數差
+	    - **Clock drift（時鐘漂移）**：振盪頻率差異
 - UTC 是國際標準時間
 	- External Synchronization : 跟 UTC 同步
 	- Internal Synchronization : 各時鐘彼此同步
@@ -51,7 +51,7 @@
 	- 沒有 UTC 接收裝置   
 	- 指定某主機為**時間守護者（time daemon）**：    
 		1. 向其他主機詢問時鐘偏差（skew）。        
-		2. 收到所有偏差後，計算平均值。        
+		2. 收到所有偏差後，計算**偏差的平均值**。        
 		3. 要求所有主機根據平均偏差調整時鐘。
 - The Network Time Protocol （NTP）
 	- Cristian 和 Berkeley 的方法適用於小型網路。    
@@ -102,7 +102,7 @@
 		- LC1：每當 process $p_i$ 發生事件前，$L_i \leftarrow L_i + 1$
 		- LC2a：發送訊息時，附上當下 $L_i$    
 		- LC2b：收到訊息 $(m, t_m)$ 時：$$ L_j \leftarrow \max(L_j, t_m) + 1$$
-	- 性質：$$若 e→e' ⇒L(e)<L(e')$$
+	- 性質：$$e→\ e' ⇒\ L(e)<L(e')$$
 		- 但**反過來不成立**。所以你無法從 LC 得出事件的先後順序
 - Global logical clocks (GLC)
 	- logical clocks 只是在單個process的中的數值，不同的processes你無法從各別的 LC 來判斷event的先後順序

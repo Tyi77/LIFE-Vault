@@ -79,12 +79,12 @@
 - **快取驗證策略（Cache Validation Policies）(Read 的部分)**
 	- 當使用延遲寫入或跨用戶端快取時，不同用戶的快取可能已不同步，驗證策略的目標是確保快取內容與伺服器主檔案一致
 	- 兩大類 : client-initiated 和 server-initiated
-		- 三種client-initiated : Before every access, Periodic checking, On open (AFS)
-> [!note] Client 和 Server initiated 的差別
-> | 策略               | 優點       | 缺點         | 代表系統       |
-> | ---------------- | -------- | ---------- | ---------- |
-> | Client-Initiated | 設計簡單，負擔小 | 效能差、一致性弱   | 早期 NFS     |
-> | Server-Initiated | 效能佳、一致性強 | 複雜度高、需記錄狀態 | AFS、NFS v4 |
+		- 三種client-initiated : Before every access, Periodic checking, Checking when opens file (AFS)
+
+| 策略               | 優點       | 缺點         | 代表系統       |
+| ---------------- | -------- | ---------- | ---------- |
+| Client-Initiated | 設計簡單，負擔小 | 效能差、一致性弱   | 早期 NFS     |
+| Server-Initiated | 效能佳、一致性強 | 複雜度高、需記錄狀態 | AFS、NFS v4 |
 ## 檔案複製 (File Replications)
 - **replica (檔案副本) 的性質**
 	- 在server的disk中
@@ -124,23 +124,22 @@
 				- 此變體可讓「資料中心副本」有高權重，低效能節點有低權重，提升彈性
 ## 無狀態 vs 有狀態的檔案服務 (Stateless vs. Stateful File Service)
 > p.25-28
-- Stateless vs Stateful Server
-> [!NOTE] 特性統整
-> | 類型     | Stateless Server（無狀態伺服器） | Stateful Server（有狀態伺服器）      |
-> | ------ | ------------------------ | ---------------------------- |
-> | 是否儲存狀態 | ❌ 不儲存用戶端狀態               | ✅ 記錄用戶端的開啟檔案、位置等狀態           |
-> | 存取模式   | 每次請求需包含完整資訊              | 請求可省略細節，伺服器記得之前的狀態           |
-> | 開檔/關檔  | 無需顯式 open/close          | 需使用 open() 開始、close() 結束檔案存取 |
-> | 容錯恢復   | ✅ 崩潰後能馬上重新提供服務           | ❌ 崩潰後需額外恢復協議                 |
-> | 複雜性    | 較簡單                      | 較高，需管理 session 與失敗情況         |
-> | 快取驗證   | 無法由伺服器主動推送               | 可由伺服器推送更新通知（如 callback）      |
-> | 鎖定支援   | ❌ 難以實作                   | ✅ 可支援檔案鎖定                    |
 
-> [!NOTE] 總結建議
-> | 如果你需要…                | 建議使用…                       |
-> | --------------------- | --------------------------- |
-> | 高容錯性，重啟立即可用           | Stateless 伺服器（如 NFS v3）     |
-> | 支援 callback、lock、高一致性 | Stateful 伺服器（如 AFS, NFS v4） |
+| 類型     | Stateless Server（無狀態伺服器） | Stateful Server（有狀態伺服器）      |
+| ------ | ------------------------ | ---------------------------- |
+| 是否儲存狀態 | ❌ 不儲存用戶端狀態               | ✅ 記錄用戶端的開啟檔案、位置等狀態           |
+| 存取模式   | 每次請求需包含完整資訊              | 請求可省略細節，伺服器記得之前的狀態           |
+| 開檔/關檔  | 無需顯式 open/close          | 需使用 open() 開始、close() 結束檔案存取 |
+| 容錯恢復   | ✅ 崩潰後能馬上重新提供服務           | ❌ 崩潰後需額外恢復協議                 |
+| 複雜性    | 較簡單                      | 較高，需管理 session 與失敗情況         |
+| 快取驗證   | 無法由伺服器主動推送               | 可由伺服器推送更新通知（如 callback）      |
+| 鎖定支援   | ❌ 難以實作                   | ✅ 可支援檔案鎖定                    |
+- **總結建議**
+
+| 如果你需要…                | 建議使用…                       |
+| --------------------- | --------------------------- |
+| 高容錯性，重啟立即可用           | Stateless 伺服器（如 NFS v3）     |
+| 支援 callback、lock、高一致性 | Stateful 伺服器（如 AFS, NFS v4） |
 ## 檔案服務架構與 API 設計：Flat File Service、Directory Service、Client Module
 > p.29-32
 - **三大模組分工**
@@ -164,9 +163,9 @@
 	- 都是 client 在發送 read/write 請求，server 負責處理這些請求
 	- Server Caching
 		- 主要觀念
-			- Read-Ahead : 預測用戶會開啟什麼檔案，先cache住這些檔案
-			- Delayed-Write : 先放在記憶體中，等到某些條件觸發後再寫入磁碟
-		- NFS v3 提供的兩種方法
+			- Read-Ahead : 預測用戶會開啟什麼檔案（最常被開啟的檔案），先cache住這些檔案
+			- Delayed-Write : 先放在記憶體（server cache）中，等到某些條件觸發後再寫入磁碟
+		- NFS v3 提供的兩種write方法
 			- Write-Through Caching : 每次寫入都直接寫進disk中
 			- Committed-Write Caching : 先放在記憶體中，等接到 client 發出commit的訊息才寫入disk中。在client的實作，通常是在關閉檔案時會自動發送commit
 	- Client Caching
@@ -175,11 +174,11 @@
 			- 需符合 ($T$ 現在時間, $T_c$ 本地端最後**驗證**時間, $T_m$ 檔案最後**修改**時間)
 				- $T - T_c < freshness\ interval$
 				- $T_m(client) = T_m(server)$
-	- Dirty Page 管理
-		- 當client對於cache的資料做寫入時，會被標記為 dirty page
-		- 送回server
-			- 等檔案被`close()`了或 `sync()`
-			- 背景程序 (如 UNIX 的 `biod`) 非同步處理
+		- Dirty Page 管理
+			- 當client對於cache的資料做寫入時，會被標記為 dirty page
+			- 送回server
+				- 等檔案被`close()`了或 `sync()`
+				- 背景程序 (如 UNIX 的 `biod`) 非同步處理
 ## Andrew File System (AFS)
 > p.42-53
 - 基本觀念

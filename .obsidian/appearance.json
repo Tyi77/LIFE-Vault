@@ -1,6 +1,6 @@
 {
-  "cssTheme": "Maple",
-  "enabledCssSnippets": [],
-  "theme": "system",
-  "accentColor": "#447128"
+  "cssTheme": "Tokyo Night",
+  "enabledCssSnippets": [
+    "style"
+  ]
 }
