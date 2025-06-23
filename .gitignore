@@ -1,6 +1,7 @@
 # to only exclude plugin configuration. Might be useful to prevent some plugin from exposing sensitive data
 .obsidian/plugins
 .obsidian/community-plugins.json
+./obsidian/appearance.json
 
 # OR only to exclude workspace cache
 .obsidian/workspace.json
